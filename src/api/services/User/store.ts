@@ -24,18 +24,12 @@ export interface UserSettings {
   lastName: string;
 }
 
-// Proyección plana del usuario para la capa de vista. Nunca pasamos el nodo MST
-// vivo como prop de React: en el logout el nodo se destruye y React, al recorrer
-// las props del fiber que desmonta, leería sus campos ya muertos y dispararía el
-// warning "read ... no longer part of a state tree". Un objeto plano es inerte.
 export interface UserInfo {
   firstName?: string;
   lastName?: string;
   eMail?: string;
 }
 
-// Normaliza el par [result, error] de `resultOrError` en una acción tipada,
-// para no repetir la misma cascada if (error) / if (result) en cada flow.
 const handleResult = <T>(
   result: T | null,
   error: unknown
@@ -86,6 +80,7 @@ const UserStore = types
         try {
           const [result, error] = (yield resultOrError(
               new Promise<UserSnapshot>((resolve) =>
+                  //Keep to fake server.
                   setTimeout(
                       () =>
                           resolve({
@@ -116,6 +111,7 @@ const UserStore = types
         try {
           const [result, error] = (yield resultOrError(
               new Promise<UserSnapshot>((resolve, reject) =>
+                  //Keep to fake server.
                   setTimeout(() => {
                     if (
                         credentials.eMail === "linda.bolt@osapiens.com" &&
