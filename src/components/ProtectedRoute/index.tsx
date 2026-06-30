@@ -5,10 +5,7 @@ import { useUserStore } from "../../api/services/User";
 import AccessDenied from "../../pages/AccessDenied";
 
 /**
- * Guard for routes flagged `requiresAuth`. Authorization is route metadata, not
- * a per-path `if` in Root: every protected route is simply nested under this
- * element in the route tree. Renders the children (<Outlet/>) when a user is
- * present, otherwise the AccessDenied page.
+ * Guard for routes flagged `requiresAuth`.
  */
 const ProtectedRoute = observer(() => {
   const userStore = useUserStore();

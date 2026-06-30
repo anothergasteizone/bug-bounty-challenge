@@ -24,7 +24,7 @@ interface AvatarMenuProps {
   user: UserInfo;
 }
 
-const getInitials = (user: UserInfo) => {
+export const getInitials = (user: UserInfo) => {
   if (user.firstName || user.lastName) {
     const initials = [user.firstName, user.lastName]
       .map((_) => (_ && _[0] ? _[0].toLocaleUpperCase() : (_ ?? "")))
@@ -45,11 +45,9 @@ const hashString = (value: string) => {
   return Math.abs(hash);
 };
 
-const stringAvatar = (user: UserInfo) => {
+export const stringAvatar = (user: UserInfo) => {
   const initials = getInitials(user);
-  // Derive the color from a hash of stable user data instead of parseInt on the
-  // initials: non-alphanumeric initials (emoji, symbols) produced NaN ->
-  // rgb(NaN,NaN,NaN). This always yields a valid, legible mid-range color.
+  // Derive the color from a hash of stable user data.
   const seed =
     user.eMail || `${user.firstName ?? ""}${user.lastName ?? ""}` || "user";
   const hash = hashString(seed);

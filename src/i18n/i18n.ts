@@ -29,7 +29,7 @@ const resources = Object.entries(localeModules).reduce(
 
 export const supportedLngs = Object.keys(resources);
 
-// Usamos el idioma del navegador como fallback solo si está soportado
+// Use browser language as fallback.
 const browserLanguage = getBrowserLanguage();
 const resolvedFallbackLng = supportedLngs.includes(browserLanguage)
   ? browserLanguage

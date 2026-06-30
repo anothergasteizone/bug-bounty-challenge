@@ -4,6 +4,11 @@ build/
 dist/
 *.tsbuildinfo
 
+# Playwright E2E artifacts
+test-results/
+playwright-report/
+/playwright/.cache/
+
 # Local env files (keep .env.example tracked)
 .env
 .env.local

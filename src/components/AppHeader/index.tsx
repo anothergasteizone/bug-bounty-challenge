@@ -39,8 +39,7 @@ const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
     const countdownSeconds = `${remaining % 60}`.padStart(2, "0");
     useEffect(() => {
       // Derive the remaining time from a fixed start timestamp instead of
-      // accumulating ticks: setInterval is throttled in background tabs, so
-      // counting ticks drifts. Clamp to 0 so it never goes negative.
+      // accumulating ticks.
       const start = Date.now();
       const tick = () => {
         const elapsed = Math.floor((Date.now() - start) / 1000);

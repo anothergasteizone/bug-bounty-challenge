@@ -44,7 +44,7 @@ const Home = () => {
         >
           {t("home.sidenote")}
         </Typography>
-        <Typography>
+        <Typography variant="h6" sx={{ textAlign: "center", padding: 4 }}>
           <Link to={"/readme"}>{t("home.goToReadme")}</Link>
         </Typography>
         <List>

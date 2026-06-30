@@ -25,8 +25,8 @@ const Root = () => {
   const { t } = useTranslation("app");
   const userStore = useUserStore();
   const user = userStore?.user;
-  // Flat snapshot for the header: passing the live MST node would make React
-  // read its fields while it unmounts after logout (a dead node).
+  // Flat userInfo, passing the live MST node would make React
+  // read its fields while it unmounts after logout.
   const userInfo =
     user && isAlive(user)
       ? {

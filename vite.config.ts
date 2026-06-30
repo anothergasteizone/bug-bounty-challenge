@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { defineConfig } from "vitest/config";
+import { defineConfig, configDefaults } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { visualizer } from 'rollup-plugin-visualizer'
 
@@ -30,6 +30,9 @@ export default defineConfig({
     test: {
         globals: true,
         environment: "jsdom",
-        setupFiles: "./src/test/setup.ts"
+        setupFiles: "./src/test/setup.ts",
+        // Playwright specs live in e2e/ and use `@playwright/test`; keep Vitest
+        // from collecting them (its default include matches *.spec.ts).
+        exclude: [...configDefaults.exclude, "e2e/**"]
     }
 });

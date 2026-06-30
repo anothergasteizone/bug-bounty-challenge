@@ -10,7 +10,6 @@ const Login = () => {
   const { t } = useTranslation("app");
   const navigate = useNavigate();
   const userStore = useUserStore();
-  //Left hardcoded for faster testing.
   const [eMail, setEMail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

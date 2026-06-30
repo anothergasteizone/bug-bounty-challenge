@@ -78,7 +78,6 @@ const UserStore = types
         const [result, error]: ResultOrErrorResponse<UserSnapshot> =
           yield resultOrError(
             new Promise<UserSnapshot>((resolve) =>
-              // Keep to fake server.
               setTimeout(
                 () =>
                   resolve({
