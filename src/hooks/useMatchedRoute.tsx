@@ -1,6 +1,6 @@
 import { Box, Fade, Grow, Slide } from "@mui/material";
 import React from "react";
-import { matchPath, Route, Switch, useLocation } from "react-router-dom";
+import { matchPath, useLocation } from "react-router-dom";
 import { PathParams, TRoute } from "../types/global";
 import { validateParams } from "../utils/router";
 
@@ -17,124 +17,105 @@ interface UseMatchedRouteOptions {
     | "slide-right";
 }
 
+interface TransitionProps {
+  in: boolean;
+  children: React.ReactNode;
+}
+
 const useMatchedRoute = (
   routes: ReadonlyArray<TRoute>,
   fallbackComponent?: React.FC,
   options?: UseMatchedRouteOptions
 ): {
-  route: TRoute;
+  route: TRoute | undefined;
   params: PathParams | null;
-  MatchedElement: JSX.Element;
+  MatchedElement: React.JSX.Element;
 } => {
-  const { notFoundComponent, matchOnSubPath, transition = "fade" } =
-    options || {};
+  const {
+    notFoundComponent,
+    matchOnSubPath,
+    transition = "fade"
+  } = options || {};
   const location = useLocation();
-  // `exact`, `sensitive` and `strict` options are set to true
-  // to ensure type safety.
+
   const results = routes
-    .map((route: TRoute): {
-      route: TRoute;
-      match: any | null;
-    } => ({
+    .map((route: TRoute) => ({
       route,
-      match: matchPath(location.pathname, {
-        path: route.path,
-        sensitive: !matchOnSubPath
-      })
+      match: matchPath(
+        { path: route.path, end: !matchOnSubPath, caseSensitive: true },
+        location.pathname
+      )
     }))
-    .filter(({ match }) => !!match && (matchOnSubPath ? true : match.isExact));
+    .filter(({ match }) => !!match);
+
   const [firstResult] = results;
   const { match, route } = firstResult || {};
+
   const Fallback = fallbackComponent;
   const NotFound = notFoundComponent || (() => <>not found</>);
 
-  const Transition: React.FC<{ match: any }> = React.useMemo(() => {
+  const Transition: React.FC<TransitionProps> = React.useMemo(() => {
     if (transition === "fade") {
-      const FadeTransition: React.FC<{ match: any }> = ({
+      const FadeTransition: React.FC<TransitionProps> = ({
         children,
-        match
+        in: inProp
       }) => (
-        <Fade in={match ? true : false} timeout={300} unmountOnExit>
-          <Box height={"100%"}>{children}</Box>
+        <Fade in={inProp} timeout={300} unmountOnExit>
+          <Box sx={{ height: "100%" }}>{children}</Box>
         </Fade>
       );
-
       return FadeTransition;
     }
-
     if (transition === "grow") {
-      const GrowTransition: React.FC<{ match: any }> = ({
+      const GrowTransition: React.FC<TransitionProps> = ({
         children,
-        match
+        in: inProp
       }) => (
-        <Grow in={match ? true : false} timeout={300} unmountOnExit>
-          <Box height={"100%"}>{children}</Box>
+        <Grow in={inProp} timeout={300} unmountOnExit>
+          <Box sx={{ height: "100%" }}>{children}</Box>
         </Grow>
       );
-
       return GrowTransition;
     }
-
     if (transition.startsWith("slide")) {
       const [, direction] = transition.split("-");
-      const SlideTransition: React.FC<{ match: any }> = ({
+      const SlideTransition: React.FC<TransitionProps> = ({
         children,
-        match
+        in: inProp
       }) => (
         <Slide
-          in={match ? true : false}
+          in={inProp}
           direction={direction as "left" | "right" | "up" | "down"}
           timeout={300}
           unmountOnExit
         >
-          <Box height={"100%"}>{children}</Box>
+          <Box sx={{ height: "100%" }}>{children}</Box>
         </Slide>
       );
-
       return SlideTransition;
     }
-    return (({ children }) => children) as React.FC<{ match: any }>;
+    return (({ children }) => <>{children}</>) as React.FC<TransitionProps>;
   }, [transition]);
 
+  const matchedPaths = new Set(results.map(({ route: r }) => r.path));
+
   return {
-    route: route,
+    route,
     params:
-      match && validateParams(route.path, match.params) ? match.params : {},
+      match && route && validateParams(route.path, match.params)
+        ? (match.params as PathParams)
+        : {},
     MatchedElement: (
-      <Switch>
-        {matchOnSubPath &&
-          routes.map(({ path, Component: RouteComponent }, i) => (
-            <Route
-              key={path + "matchOnSubPath"}
-              path={`/${path.split("/").slice(1, 2)}/*`}
-            >
-              {({ match }) => (
-                <Transition match={match}>
-                  <RouteComponent />
-                </Transition>
-              )}
-            </Route>
-          ))}
-        {routes.map(({ path, Component: RouteComponent }, i) => (
-          <Route key={path + "root"} sensitive strict exact path={path}>
-            {({ match }) => (
-              <Transition match={match}>
-                <RouteComponent />
-              </Transition>
-            )}
-          </Route>
+      <>
+        {routes.map(({ path, Component: RouteComponent }) => (
+          <Transition key={path} in={matchedPaths.has(path)}>
+            <RouteComponent />
+          </Transition>
         ))}
-        {Fallback && (
-          <Transition match={true}>
-            <Fallback />
-          </Transition>
-        )}
-        {!Fallback && (
-          <Transition match={true}>
-            <Route component={NotFound} />
-          </Transition>
-        )}
-      </Switch>
+        <Transition in={results.length === 0}>
+          {Fallback ? <Fallback /> : <NotFound />}
+        </Transition>
+      </>
     )
   };
 };

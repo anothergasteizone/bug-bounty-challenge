@@ -1,25 +1,30 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from "react";
+import UserStore, { UserStoreInstance } from "./store";
+import { persist } from "mst-persist";
 
-import Store from "./store";
+const UserStoreContext = createContext<UserStoreInstance | null>(null);
 
-/* 
-CONTEXT / PROVIDER INIT
-*/
+const userStore = UserStore.create({ user: null, isLoading: false });
 
-const UserStoreContext = createContext<Store | null>(null);
-
-export const StoreProvider: React.FC = (props) => {
+export const StoreProvider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props;
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    persist("userStore", userStore, {
+      whitelist: ["user"]
+    }).then(() => setIsHydrated(true));
+  }, []);
+
+  if (!isHydrated) {
+    return null;
+  }
 
   return (
-    <UserStoreContext.Provider value={new Store()}>
-      {children}
-    </UserStoreContext.Provider>
+      <UserStoreContext.Provider value={userStore}>
+        {children}
+      </UserStoreContext.Provider>
   );
 };
-
-/* 
-HOOK DEFINITION
-*/
 
 export const useUserStore = () => useContext(UserStoreContext);

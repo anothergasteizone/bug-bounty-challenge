@@ -1,6 +1,11 @@
+import React, {JSX} from "react";
+
 export enum ERoute {
   ROOT = "/",
-  HOME = "/home"
+  HOME = "/home",
+  README = "/readme",
+  LOGIN = "/login",
+  SETTINGS = "/user/settings"
 }
 
 export type TRoute = {
@@ -22,6 +27,6 @@ export type ActionSuccess<T> = {
 };
 export type ActionError = {
   status: ActionResultStatus.ERROR;
-  error: any;
-  knownErrors: { [key: string]: string };
+  error: unknown;
+  knownErrors?: { [key: string]: string };
 };

@@ -1,18 +1,7 @@
-import { merge } from "lodash";
+import merge  from "lodash/merge";
+import {createTheme, darken} from "@mui/material/styles";
 
-import { createTheme } from "@mui/material/styles";
-
-// import MaterialDesignIcons from "!!url-loader!@mdi/font/fonts/materialdesignicons-webfont.woff2"
 import tokens, { fonts, OsapiensThemeTokens } from "./tokens";
-
-// TODO: override styles of all anchor elements
-// a,
-// a:hover {
-//   color: $primary;
-// }
-// a:visited {
-//   color: adjust-color($color: $primary, $lightness: -20%);
-// }
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -86,10 +75,19 @@ const commonTheme = {
       desktop: tokens.breakpoints.breakpointDesktop
     }
   },
-  overrides: {
+  components: {
     MuiCssBaseline: {
-      "@global": {
-        "@font-face": fonts
+      styleOverrides: {
+        "@font-face": fonts,
+        a: {
+          color: tokens.color.primary,
+          "&:hover": {
+            color: tokens.color.primary
+          },
+          "&:visited": {
+            color: darken(tokens.color.primary, 0.2)
+          }
+        }
       }
     }
   }

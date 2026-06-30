@@ -1,15 +1,15 @@
-import { Box, CircularProgress, Slide } from "@mui/material";
+import { Box, Slide } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useUserStore } from "../../api/services/User";
+import { isAlive } from "mobx-state-tree";
 import AppHeader from "../../components/AppHeader";
 import useMatchedRoute from "../../hooks/useMatchedRoute";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { TRoute } from "../../types/global";
-import { resultOrError } from "../../utils/global";
+import { ERoute } from "../../types/global";
 import AccessDenied from "../AccessDenied";
-import { routes as useRoutes } from "../routes";
+import { routes } from "../routes";
 
 const hideSplashScreen = () => {
   const splashscreen = document.getElementById("app-splashscreen");
@@ -25,10 +25,14 @@ const hideSplashScreen = () => {
 const Root = () => {
   const { t } = useTranslation("app");
   const userStore = useUserStore();
-  const { user } = userStore || {};
+  const user = userStore?.user;
+  // Snapshot plano para el header: ver nota en UserInfo (store.ts). Si pasáramos
+  // el nodo MST, React leería sus campos al desmontar tras el logout (nodo muerto).
+  const userInfo =
+    user && isAlive(user)
+      ? { firstName: user.firstName, lastName: user.lastName, eMail: user.eMail }
+      : null;
   const theme = useTheme();
-  console.log(user);
-  const routes = [...useRoutes] as readonly TRoute[];
   const [fallbackRoute] = routes;
   const Fallback = fallbackRoute.Component;
   const { route = fallbackRoute, MatchedElement } = useMatchedRoute(
@@ -37,25 +41,13 @@ const Root = () => {
     { matchOnSubPath: true }
   );
 
-  let pageTitle = t(`routes.${route.path}`);
+  const pageTitle = t(`routes.${route.path}`);
 
-  if (route.path.indexOf("data") > -1 || route.path.indexOf("settings") > -1) {
-    const [, groupName] = route.path.split("/");
-    pageTitle = t(`routes./${groupName}`);
-  }
-
-  const loadingApp = false;
-  const accessDenied = false;
+  const accessDenied = route.path === ERoute.SETTINGS && !user;
 
   useEffect(() => {
     hideSplashScreen();
   }, []);
-
-  useEffect(() => {
-    if (!user && userStore) {
-      userStore.getOwnUser();
-    }
-  }, [user, userStore]);
 
   if (accessDenied) {
     return <AccessDenied />;
@@ -72,17 +64,6 @@ const Root = () => {
         height: "100vh"
       }}
     >
-      {loadingApp && (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          width="100%"
-          height="100%"
-        >
-          <CircularProgress color="primary" size={100} />
-        </Box>
-      )}
       <Box
         sx={{
           display: "flex",
@@ -91,8 +72,8 @@ const Root = () => {
           background: "#f5f5f5"
         }}
       >
-        <Slide direction="down" in={!loadingApp} mountOnEnter>
-          <AppHeader user={user ?? {}} pageTitle={pageTitle} />
+        <Slide direction="down" in mountOnEnter>
+          <AppHeader user={userInfo} pageTitle={pageTitle} />
         </Slide>
         <Box
           component="main"

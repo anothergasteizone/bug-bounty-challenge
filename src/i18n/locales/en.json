@@ -1,8 +1,14 @@
 {
   "logout": "Logout",
+  "login": "Log in",
+  "AccessDenied": "Access denied",
+  "speakToYourAdmin": "You need to be logged in to access this page.",
   "appTitle": "Supplier OS Application",
   "routes": {
-    "/home": "Bug Bounty Challenge"
+    "/home": "Bug Bounty Challenge",
+    "/readme": "Challenge Readme",
+    "/login": "Log in",
+    "/user/settings": "Settings"
   },
   "home": {
     "welcome": "Welcome!",

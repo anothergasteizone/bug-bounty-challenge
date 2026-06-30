@@ -1,0 +1,18 @@
+{
+  "logout": "Cerrar sesión",
+  "login": "Iniciar sesión",
+  "AccessDenied": "Acceso denegado",
+  "speakToYourAdmin": "Necesitas iniciar sesión para acceder a esta página.",
+  "appTitle": "Aplicación Supplier OS",
+  "routes": {
+    "/home": "Desafío de Bug Bounty",
+    "/readme": "Challenge Readme",
+    "/login": "Iniciar sesión",
+    "/user/settings": "Ajustes"
+  },
+  "home": {
+    "welcome": "¡Bienvenido!",
+    "intro": "Esta es una aplicación de demostración con algunos fallos y errores que esperamos que puedas encontrar. 😃 Aquí tienes la lista de problemas <b>conocidos</b>:",
+    "sidenote": "Todos los errores tienen un nivel de complejidad diferente y todos ellos son bastante comunes (problemas del mundo real para cualquier desarrollador de React). Para resolver todos los puntos abiertos se requiere un conjunto diferente de habilidades: buscar en Google, experiencia, leer documentación y mensajes de error, creatividad y pensamiento analítico."
+  }
+}

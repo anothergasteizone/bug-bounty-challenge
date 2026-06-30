@@ -98,7 +98,7 @@ export const tokens: OsapiensThemeTokens = {
   },
   fonts,
   images: {
-    background: "transparent" // require("!!url-loader!./assets/background-pattern.svg"),
+    background: "transparent"
   },
   tabbedHeader: {
     height: "80px"
