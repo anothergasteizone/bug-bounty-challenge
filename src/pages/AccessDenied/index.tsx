@@ -7,7 +7,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ERoute } from "../../types/global";
-import "../Login/index.css";
+import "../../styles/auth.css";
 
 const AccessDenied: React.FC = () => {
   const { t } = useTranslation("app");
@@ -45,7 +45,7 @@ const AccessDenied: React.FC = () => {
         <button
           type="button"
           onClick={() => navigate(ERoute.LOGIN)}
-          className="login-button"
+          className="auth-button"
         >
           {t("login")}
         </button>

@@ -6,6 +6,69 @@ and the extra features added.
 
 ---
 
+## Running the project
+
+> **Requirements:** Node 18+ and npm.
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure the login credentials
+
+The login credentials are **not hardcoded** in the source anymore — they are
+read from environment variables at build time. Copy the example file to `.env`
+(and tweak the values if you want):
+
+```bash
+cp .env.example .env
+```
+
+`.env.example` ships with the working demo values:
+
+```bash
+VITE_DEMO_USER_EMAIL=linda.bolt@osapiens.com
+VITE_DEMO_USER_PASSWORD=1234
+```
+
+Vite only exposes variables prefixed with `VITE_`, and inlines them into the
+bundle **when the app is built/served** — they are consumed in
+`src/api/services/User/store.ts` via `import.meta.env`. `.env` is gitignored;
+`.env.example` is the tracked template.
+
+### 3. Development server
+
+```bash
+npm run dev
+```
+
+Starts Vite's dev server on http://localhost:3000 (opens the browser
+automatically).
+
+### 4. Production build + preview
+
+```bash
+npm run build      # tsc -b && vite build  ->  outputs to build/
+npm run preview    # serves the production build from build/
+```
+
+`npm run build` type-checks and produces the optimized bundle in `build/`.
+`npm run preview` then boots a local static server with that exact bundle, so
+you can verify the compiled app as it will be deployed.
+
+### Login credentials
+
+Use the values from your `.env` (the shipped demo defaults below):
+
+| Field    | Value                     |
+|----------|---------------------------|
+| Email    | `linda.bolt@osapiens.com` |
+| Password | `1234`                    |
+
+---
+
 ## 1. Context and getting started
 
 The original project was an application created with **CodeSandbox + Create
@@ -27,19 +90,22 @@ Summary of the structural changes to the project:
 | Bundler / toolchain | Create React App (`react-scripts`) | **Vite 6** (`vite.config.ts`) |
 | Entry point | `src/index.tsx` (`ReactDOM.render`) | `src/main.tsx` (`createRoot` + `StrictMode`) |
 | React | 17 | **19** |
-| Router | `react-router-dom` v5 (`HashRouter`, `Switch`, legacy `matchPath`) | **v6** (`BrowserRouter`, new `matchPath` API) |
+| Router | `react-router-dom` v5 (`HashRouter`, `Switch`, legacy `matchPath`) | **v6** (`HashRouter`, `<Routes>` / `<Route>`) |
 | State | MobX (`makeAutoObservable`) | **MobX-State-Tree** + `mst-persist` |
-| UI | MUI 5 + `@mui/styles` (`StylesProvider`) | **MUI 6** + `StyledEngineProvider` |
+| UI | MUI 5 + `@mui/styles` (`StylesProvider`) | **MUI 9** + `StyledEngineProvider` |
 | i18n | Manual locale loading | `import.meta.glob` + `i18next-browser-languagedetector` |
 | TypeScript | 4.4 | **5.6** (config targeting `bundler` / `vite/client`) |
 | Quality | — | **ESLint + Prettier** configured |
 
 Specific changes derived from the migration:
 
-- `useMatchedRoute` was rewritten for react-router v6's new `matchPath` API
-  (`{ path, end, caseSensitive }`), and the `Switch` / `Route` render-props were
-  removed and replaced with transitions controlled via the `in` prop.
-- `App.tsx` moves from `HashRouter` to `BrowserRouter` with the v7 *future
+- Routing uses react-router v6's idiomatic `<Routes>` / `<Route>` tree, with
+  `Root` as a layout route (`<Outlet/>`). Each page is loaded with
+  `React.lazy(() => import(...))`, so every route ships in its own chunk and is
+  only fetched when first visited (real code-splitting — see §6). The earlier
+  hand-rolled `useMatchedRoute` hook (which rendered every route on each
+  navigation) was removed.
+- `App.tsx` keeps `HashRouter` (static-hosting friendly) with the v7 *future
   flags* enabled to avoid deprecation warnings.
 - The debug `console.log(user)` in `Root` was removed.
 
@@ -84,8 +150,10 @@ was wrapped in `observer` so it reacts to store changes.
 cleared**. In development (and especially with `StrictMode`, which mounts/
 unmounts components) several overlapping intervals piled up, each incrementing
 the counter at a different rate, which produced the erratic behavior.
-**Fix:** the interval id is stored and the cleanup function
-`return () => clearInterval(id)` is returned from the `useEffect`.
+**Fix:** the interval id is stored and cleaned up
+(`return () => clearInterval(id)`), and the remaining time is derived from a
+fixed start timestamp (`Date.now()`) rather than by accumulating ticks, so it
+stays correct even when `setInterval` is throttled in a background tab.
 
 ### ⭐️ 3.5 (Optional) — Language switcher (English / German)
 **Fix:** a `LanguageSwitcher` component was added to the app bar.
@@ -105,20 +173,24 @@ the counter at a different rate, which produced the erratic behavior.
 In addition to the challenge items, a complete session flow was added to give
 the user store a purpose:
 
-- **Login** (`/login`): a form that validates credentials against the store
-  (`linda.bolt@osapiens.com` / `1234`) and handles loading and error states.
+- **Login** (`/login`): a form that validates credentials against the store and
+  handles loading and error states. The accepted credentials are no longer
+  hardcoded — they come from `VITE_DEMO_USER_EMAIL` / `VITE_DEMO_USER_PASSWORD`
+  in `.env` (see *Running the project* above; demo values:
+  `linda.bolt@osapiens.com` / `1234`).
 - **Logout**: actually implemented in the `AvatarMenu` (it used to be a
   `console.log("logout")`) and also available from the Login screen.
 - **Settings** (`/user/settings`): editing the profile's first and last name.
-  It is a **protected route** — `Root` flags `accessDenied` when accessed
-  without a session and shows the `AccessDenied` screen, which was rewritten to
-  offer a "Log in" button.
+  It is a **protected route** — authorization is route metadata (`requiresAuth`
+  on the route), enforced by a generic `<ProtectedRoute>` guard that renders the
+  `AccessDenied` screen when there is no session. `AccessDenied` offers a
+  "Log in" button.
 - **Local user persistence** with `mst-persist` (`whitelist: ["user"]`).
   > Note: it is persisted locally only to **demonstrate the use of
   > persistence**; in a production environment this would not make sense
-  > (session data should not live only in `localStorage`). Note also that
-  > `getOwnUser` no longer auto-loads a *hardcoded* user on startup (it resolves
-  > `undefined`): creating a session now goes through the Login flow.
+  > (session data should not live only in `localStorage`). The unused
+  > `getOwnUser` action was removed — creating a session now goes exclusively
+  > through the Login flow.
 - **Readme page** (`/readme`): renders this very document inside the app, linked
   from `Home` and from the header title.
 
@@ -131,16 +203,32 @@ the user store a purpose:
 - **ESLint** configured (`.eslintrc.cjs`) with `lint` and `lint:fix` scripts.
 - Typing tightened during the React 19 / TS 5.6 migration
   (`PropsWithChildren`, `children: React.ReactNode`, route and param types,
-  etc.).
+  etc.). `noUnusedLocals` / `noUnusedParameters` are enabled, and errors are
+  modeled as `Error` (no string rejections or `unknown`), which removed the
+  `as ResultOrErrorResponse<...>` casts in the store.
+- **Accessibility**: the avatar-menu trigger is a real `<IconButton>` with
+  `aria-haspopup` / `aria-expanded` / keyboard support; the avatar background
+  color is now a deterministic hash and can no longer produce `rgb(NaN,…)`.
+- The duplicated `Login` / `Settings` CSS was merged into one shared stylesheet
+  (`src/styles/auth.css`).
+- **Testing infrastructure**: **Vitest + React Testing Library + jsdom**
+  (`test` / `test:watch` scripts, `src/test/setup.ts`), with an initial unit
+  test for `resultOrError`.
 - Various minor bugs fixed along the way during the migration.
 
 ---
 
 ## 6. Bundle size
 
-- **rollup-plugin-visualizer** Used to analyze
-- **tree-shaking** applied to some libraries like lodash
-- **Mobx** fully refactored, but to heavy, decide to change it with Zustand
+- **Code-splitting**: every page is `React.lazy`-loaded, so it ships in its own
+  chunk and is fetched on demand. In particular `react-markdown` (used by the
+  Readme page) is no longer part of the initial bundle — it loads only when
+  `/readme` is opened.
+- **rollup-plugin-visualizer** is wired up (`npm run build:analyze`) to inspect
+  chunk sizes.
+- **Tree-shaking**: `lodash` is imported per-function (`lodash/merge`).
+- State stays on **MobX-State-Tree** (a module-level singleton store); it was
+  deliberately kept rather than swapped out.
 
 ---
 

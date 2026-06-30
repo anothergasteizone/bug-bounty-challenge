@@ -3,3 +3,8 @@ node_modules
 build/
 dist/
 *.tsbuildinfo
+
+# Local env files (keep .env.example tracked)
+.env
+.env.local
+.env.*.local

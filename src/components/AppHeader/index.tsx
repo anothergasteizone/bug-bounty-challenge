@@ -29,101 +29,105 @@ const AppBar = styled(MuiAppBar)<AppBarProps>(({ theme }) => ({
   color: theme.palette.common.white,
   height: theme.tokens.header.height
 }));
-const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>((props, ref) => {
-  const { user, pageTitle } = props;
-  const { t } = useTranslation("app");
-  const theme = useTheme();
-  const [remaining, setRemaining] = useState(COUNTDOWN_SECONDS);
-  const countdownMinutes = `${Math.floor(remaining / 60)}`.padStart(2, "0");
-  const countdownSeconds = `${remaining % 60}`.padStart(2, "0");
-  useEffect(() => {
-    // Derive the remaining time from a fixed start timestamp instead of
-    // accumulating ticks: setInterval is throttled in background tabs, so
-    // counting ticks drifts. Clamp to 0 so it never goes negative.
-    const start = Date.now();
-    const tick = () => {
-      const elapsed = Math.floor((Date.now() - start) / 1000);
-      setRemaining(Math.max(COUNTDOWN_SECONDS - elapsed, 0));
-    };
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
+const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
+  (props, ref) => {
+    const { user, pageTitle } = props;
+    const { t } = useTranslation("app");
+    const theme = useTheme();
+    const [remaining, setRemaining] = useState(COUNTDOWN_SECONDS);
+    const countdownMinutes = `${Math.floor(remaining / 60)}`.padStart(2, "0");
+    const countdownSeconds = `${remaining % 60}`.padStart(2, "0");
+    useEffect(() => {
+      // Derive the remaining time from a fixed start timestamp instead of
+      // accumulating ticks: setInterval is throttled in background tabs, so
+      // counting ticks drifts. Clamp to 0 so it never goes negative.
+      const start = Date.now();
+      const tick = () => {
+        const elapsed = Math.floor((Date.now() - start) / 1000);
+        setRemaining(Math.max(COUNTDOWN_SECONDS - elapsed, 0));
+      };
+      const id = setInterval(tick, 1000);
+      return () => clearInterval(id);
+    }, []);
 
-  return (
-    <AppBar ref={ref} position="fixed" sx={{ width: "100vw" }}>
-      <Toolbar sx={{ background: "#08140C 0% 0% no-repeat padding-box" }}>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center"
-          }}
-        >
-          {/* Izquierda: counter */}
-          <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
-            <Typography variant="h6" component="div" color="primary">
-              {countdownMinutes}:{countdownSeconds}
-            </Typography>
-          </Box>
-
-          {/* Centro: título */}
+    return (
+      <AppBar ref={ref} position="fixed" sx={{ width: "100%" }}>
+        <Toolbar sx={{ background: "#08140C 0% 0% no-repeat padding-box" }}>
           <Box
             sx={{
-              flex: 1,
+              width: "100%",
               display: "flex",
-              flexDirection: "column",
               alignItems: "center"
             }}
           >
-            <Link
-              to={ERoute.ROOT}
-              style={{ textDecoration: "none", color: "inherit" }}
+            {/* Left: counter */}
+            <Box
+              sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}
             >
-              <Typography
-                sx={{
-                  ...typoStyle,
-                  color: theme.palette.primary.main,
-                  mb: theme.spacing(0.5)
-                }}
-                variant="h6"
-                component="div"
-              >
-                {t("appTitle").toLocaleUpperCase()}
+              <Typography variant="h6" component="div" color="primary">
+                {countdownMinutes}:{countdownSeconds}
               </Typography>
-              <Typography
-                sx={{ ...typoStyle }}
-                variant="overline"
-                component="div"
-                noWrap
-              >
-                {pageTitle.toLocaleUpperCase()}
-              </Typography>
-            </Link>
-          </Box>
+            </Box>
 
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: 2
-            }}
-          >
-            <LanguageSwitcher />
-            {user && user.eMail && (
-              <Grow in={Boolean(user && user.eMail)}>
-                <AvatarMenu user={user} />
-              </Grow>
-            )}
-            {!(user && user.eMail) && (
-              <Link to={ERoute.LOGIN}>{t("login")}</Link>
-            )}
+            {/* Center: title */}
+            <Box
+              sx={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              <Link
+                to={ERoute.ROOT}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography
+                  sx={{
+                    ...typoStyle,
+                    color: theme.palette.primary.main,
+                    mb: theme.spacing(0.5)
+                  }}
+                  variant="h6"
+                  component="div"
+                >
+                  {t("appTitle").toLocaleUpperCase()}
+                </Typography>
+                <Typography
+                  sx={{ ...typoStyle }}
+                  variant="overline"
+                  component="div"
+                  noWrap
+                >
+                  {pageTitle.toLocaleUpperCase()}
+                </Typography>
+              </Link>
+            </Box>
+
+            <Box
+              sx={{
+                flex: 1,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                gap: 2
+              }}
+            >
+              <LanguageSwitcher />
+              {user && user.eMail && (
+                <Grow in={Boolean(user && user.eMail)}>
+                  <AvatarMenu user={user} />
+                </Grow>
+              )}
+              {!(user && user.eMail) && (
+                <Link to={ERoute.LOGIN}>{t("login")}</Link>
+              )}
+            </Box>
           </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
-});
+        </Toolbar>
+      </AppBar>
+    );
+  }
+);
 AppHeader.displayName = "AppHeader";
 export default AppHeader;

@@ -3,7 +3,7 @@ import Menu from "@mui/material/Menu";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import {supportedLngs} from "../../i18n";
+import { supportedLngs } from "../../i18n";
 
 interface Language {
   code: string;
@@ -12,7 +12,6 @@ interface Language {
 
 const Index: React.FC = () => {
   const { i18n, t } = useTranslation("app");
-
 
   let displayNames: Intl.DisplayNames | null = null;
   try {

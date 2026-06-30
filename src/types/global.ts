@@ -1,4 +1,4 @@
-import React, {JSX} from "react";
+import React, { JSX } from "react";
 
 export enum ERoute {
   ROOT = "/",
@@ -12,9 +12,8 @@ export type TRoute = {
   path: ERoute;
   Icon?: React.FC | JSX.Element;
   Component: React.FC; // React components have to be written in Capitalized!
+  requiresAuth?: boolean;
 };
-
-export type PathParams = { [i: string]: string };
 
 export enum ActionResultStatus {
   SUCCESS = "SUCCESS",
@@ -27,6 +26,6 @@ export type ActionSuccess<T> = {
 };
 export type ActionError = {
   status: ActionResultStatus.ERROR;
-  error: unknown;
+  error: Error;
   knownErrors?: { [key: string]: string };
 };

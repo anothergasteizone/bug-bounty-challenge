@@ -1,14 +1,17 @@
-import React, { Suspense } from "react";
-import {mdiBook, mdiEngine, mdiHome, mdiLogin} from "@mdi/js";
+import React from "react";
+import { mdiBook, mdiEngine, mdiHome, mdiLogin } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Box, CircularProgress, Grow } from "@mui/material";
 import { ERoute, TRoute } from "../types/global";
-import Home from "./Home";
-import Readme from "./Readme";
-import Login from "./Login";
-import Settings from "./Settings";
 
-const Loading = (
+// Code-split each page: every route now ships in its own chunk and is only
+// fetched when first navigated to (real lazy loading, not a decorative Suspense).
+const Home = React.lazy(() => import("./Home"));
+const Readme = React.lazy(() => import("./Readme"));
+const Login = React.lazy(() => import("./Login"));
+const Settings = React.lazy(() => import("./Settings"));
+
+export const Loading = (
   <Grow in={true}>
     <Box
       sx={{
@@ -25,34 +28,27 @@ const Loading = (
     </Box>
   </Grow>
 );
-const lazyLoad = (Component: React.ComponentType) => {
-  const LazyLoaded = () => (
-    <Suspense fallback={Loading}>
-      <Component />
-    </Suspense>
-  );
-  return LazyLoaded;
-};
 
 export const routes: TRoute[] = [
   {
     path: ERoute.HOME,
     Icon: <Icon path={mdiHome} size={1} />,
-    Component: lazyLoad(Home)
+    Component: Home
   },
   {
     path: ERoute.README,
     Icon: <Icon path={mdiBook} size={1} />,
-    Component: lazyLoad(Readme)
+    Component: Readme
   },
   {
     path: ERoute.LOGIN,
     Icon: <Icon path={mdiLogin} size={1} />,
-    Component: lazyLoad(Login)
+    Component: Login
   },
   {
     path: ERoute.SETTINGS,
     Icon: <Icon path={mdiEngine} size={1} />,
-    Component: lazyLoad(Settings)
+    Component: Settings,
+    requiresAuth: true
   }
 ];

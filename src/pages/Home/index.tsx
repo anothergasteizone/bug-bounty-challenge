@@ -1,4 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { observer } from "mobx-react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -8,6 +9,7 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const { t } = useTranslation("app");
+  const theme = useTheme();
   const issues = [
     { icon: "🐞", key: "consoleKey" },
     { icon: "🐞", key: "boldKnown" },
@@ -18,7 +20,11 @@ const Home = () => {
 
   return (
     <Box
-      sx={{ p: 2, maxHeight: "calc(100vh - 64px)", overflow: "auto" }}
+      sx={{
+        p: 2,
+        maxHeight: `calc(100vh - ${theme.tokens.header.height})`,
+        overflow: "auto"
+      }}
     >
       <Container>
         <Typography variant="h1" sx={{ textAlign: "center" }}>

@@ -1,4 +1,5 @@
-.login-page {
+/* Shared styles for the auth-style card pages (Login, Settings, AccessDenied). */
+.auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -7,7 +8,7 @@
   padding: 16px;
 }
 
-.login-card {
+.auth-card {
   width: 100%;
   max-width: 380px;
   background: #ffffff;
@@ -17,24 +18,24 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.login-title {
+.auth-title {
   margin: 0 0 4px;
   font-size: 24px;
   font-weight: 600;
   color: #1e293b;
 }
 
-.login-subtitle {
+.auth-subtitle {
   margin: 0 0 24px;
   font-size: 14px;
   color: #64748b;
 }
 
-.login-field {
+.auth-field {
   margin-bottom: 16px;
 }
 
-.login-field label {
+.auth-field label {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
@@ -42,7 +43,7 @@
   color: #334155;
 }
 
-.login-field input {
+.auth-field input {
   width: 100%;
   box-sizing: border-box;
   padding: 10px 14px;
@@ -56,12 +57,12 @@
     box-shadow 0.15s ease;
 }
 
-.login-field input:focus {
+.auth-field input:focus {
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
-.login-error {
+.auth-error {
   margin: 0 0 8px;
   padding: 8px 12px;
   font-size: 14px;
@@ -70,7 +71,16 @@
   border-radius: 8px;
 }
 
-.login-button {
+.auth-success {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #059669;
+  background: #ecfdf5;
+  border-radius: 8px;
+}
+
+.auth-button {
   width: 100%;
   margin-top: 8px;
   padding: 11px 16px;
@@ -86,31 +96,31 @@
     opacity 0.15s ease;
 }
 
-.login-button:hover:not(:disabled) {
+.auth-button:hover:not(:disabled) {
   background: #4338ca;
 }
 
-.login-button:disabled {
+.auth-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.login-button--secondary {
+.auth-button--secondary {
   margin-top: 24px;
   background: #ffffff;
   color: #475569;
   border: 1px solid #e2e8f0;
 }
 
-.login-button--secondary:hover {
+.auth-button--secondary:hover {
   background: #f8fafc;
 }
 
-.login-card--session {
+.auth-card--centered {
   text-align: center;
 }
 
-.login-check {
+.auth-check {
   width: 48px;
   height: 48px;
   margin: 0 auto 16px;
@@ -122,25 +132,25 @@
   color: #059669;
 }
 
-.login-check svg {
+.auth-check svg {
   width: 24px;
   height: 24px;
 }
 
-.login-session-label {
+.auth-message {
   margin: 0;
   font-size: 14px;
   color: #64748b;
 }
 
-.login-session-name {
+.auth-session-name {
   margin: 4px 0 0;
   font-size: 18px;
   font-weight: 600;
   color: #1e293b;
 }
 
-.login-session-email {
+.auth-session-email {
   margin: 0;
   font-size: 14px;
   color: #94a3b8;

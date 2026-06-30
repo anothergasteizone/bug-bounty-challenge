@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Divider,
+  IconButton,
   Tooltip,
   Typography
 } from "@mui/material";
@@ -26,30 +27,44 @@ interface AvatarMenuProps {
 const getInitials = (user: UserInfo) => {
   if (user.firstName || user.lastName) {
     const initials = [user.firstName, user.lastName]
-      .map((_) => (_ && _[0] ? _[0].toLocaleUpperCase() : _ ?? ""))
+      .map((_) => (_ && _[0] ? _[0].toLocaleUpperCase() : (_ ?? "")))
       .join("");
     return initials;
   }
   return "";
 };
 
+// Deterministic 32-bit string hash, so the same user always maps to the same
+// color across sessions.
+const hashString = (value: string) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+};
+
 const stringAvatar = (user: UserInfo) => {
   const initials = getInitials(user);
-  // 36 * 7 <= 255
-  const r = Math.floor(parseInt(initials[0] ? initials[0] : "k", 36) * 7);
-  const g = Math.floor(parseInt(initials[1] ? initials[1] : "l", 36) * 7);
-  const b = Math.floor(
-    parseInt(user?.firstName?.[1] ? user.firstName[1] : "m", 36) * 7
-  );
+  // Derive the color from a hash of stable user data instead of parseInt on the
+  // initials: non-alphanumeric initials (emoji, symbols) produced NaN ->
+  // rgb(NaN,NaN,NaN). This always yields a valid, legible mid-range color.
+  const seed =
+    user.eMail || `${user.firstName ?? ""}${user.lastName ?? ""}` || "user";
+  const hash = hashString(seed);
+  const r = 80 + (hash % 128);
+  const g = 80 + ((hash >> 8) % 128);
+  const b = 80 + ((hash >> 16) % 128);
   return {
-    sx: { bgcolor: `rgb(${r},${g},${b})`, cursor: "pointer" },
+    sx: { bgcolor: `rgb(${r},${g},${b})` },
     children: initials
   };
 };
 
 const AvatarMenu = React.forwardRef<HTMLDivElement, AvatarMenuProps>(
   (props, ref) => {
-      const navigate = useNavigate();
+    const navigate = useNavigate();
     const userStore = useUserStore();
     const { user } = props;
     const theme = useTheme();
@@ -65,10 +80,20 @@ const AvatarMenu = React.forwardRef<HTMLDivElement, AvatarMenuProps>(
 
     return (
       <div ref={ref}>
-        <Avatar onClick={handleClick} {...stringAvatar(user)} />
+        <IconButton
+          id="avatar-menu-button"
+          onClick={handleClick}
+          sx={{ p: 0 }}
+          aria-label={t("avatarMenu.openMenu")}
+          aria-haspopup="menu"
+          aria-controls={open ? "avatar-menu" : undefined}
+          aria-expanded={open}
+        >
+          <Avatar {...stringAvatar(user)} />
+        </IconButton>
         <Menu
-          id="demo-positioned-menu"
-          aria-labelledby="demo-positioned-button"
+          id="avatar-menu"
+          aria-labelledby="avatar-menu-button"
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -113,11 +138,7 @@ const AvatarMenu = React.forwardRef<HTMLDivElement, AvatarMenuProps>(
               color: theme.palette.grey[500]
             }}
           >
-            <Button
-              color="inherit"
-              variant="text"
-              size="small"
-            >
+            <Button color="inherit" variant="text" size="small">
               <Icon path={mdiTag} size={0.75} />
               <Box sx={{ m: 0.5 }} />
               {t("avatarMenu.editOrganization")}

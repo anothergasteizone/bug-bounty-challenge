@@ -3,13 +3,12 @@ import { useTheme } from "@mui/material/styles";
 import { useUserStore } from "../../api/services/User";
 import { isAlive } from "mobx-state-tree";
 import AppHeader from "../../components/AppHeader";
-import useMatchedRoute from "../../hooks/useMatchedRoute";
 import { observer } from "mobx-react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Outlet, matchPath, useLocation } from "react-router-dom";
 import { ERoute } from "../../types/global";
-import AccessDenied from "../AccessDenied";
-import { routes } from "../routes";
+import { Loading, routes } from "../routes";
 
 const hideSplashScreen = () => {
   const splashscreen = document.getElementById("app-splashscreen");
@@ -26,32 +25,27 @@ const Root = () => {
   const { t } = useTranslation("app");
   const userStore = useUserStore();
   const user = userStore?.user;
-  // Snapshot plano para el header: ver nota en UserInfo (store.ts). Si pasáramos
-  // el nodo MST, React leería sus campos al desmontar tras el logout (nodo muerto).
+  // Flat snapshot for the header: passing the live MST node would make React
+  // read its fields while it unmounts after logout (a dead node).
   const userInfo =
     user && isAlive(user)
-      ? { firstName: user.firstName, lastName: user.lastName, eMail: user.eMail }
+      ? {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          eMail: user.eMail
+        }
       : null;
   const theme = useTheme();
-  const [fallbackRoute] = routes;
-  const Fallback = fallbackRoute.Component;
-  const { route = fallbackRoute, MatchedElement } = useMatchedRoute(
-    routes,
-    Fallback,
-    { matchOnSubPath: true }
+  const location = useLocation();
+
+  const activeRoute = routes.find((route) =>
+    matchPath({ path: route.path, end: false }, location.pathname)
   );
-
-  const pageTitle = t(`routes.${route.path}`);
-
-  const accessDenied = route.path === ERoute.SETTINGS && !user;
+  const pageTitle = t(`routes.${activeRoute?.path ?? ERoute.HOME}`);
 
   useEffect(() => {
     hideSplashScreen();
   }, []);
-
-  if (accessDenied) {
-    return <AccessDenied />;
-  }
 
   return (
     <div
@@ -60,7 +54,7 @@ const Root = () => {
         position: "fixed",
         top: 0,
         left: 0,
-        width: "100vw",
+        width: "100%",
         height: "100vh"
       }}
     >
@@ -85,7 +79,9 @@ const Root = () => {
               theme.tokens.header.height /* Necessary because of AppBar */
           }}
         >
-          {MatchedElement}
+          <Suspense fallback={Loading}>
+            <Outlet />
+          </Suspense>
         </Box>
       </Box>
     </div>

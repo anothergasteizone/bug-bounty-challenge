@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ActionResultStatus, ERoute } from "../../types/global.ts";
 import { useUserStore } from "../../api/services/User";
-import "./index.css";
+import "../../styles/auth.css";
 
 const Login = () => {
   const { t } = useTranslation("app");
   const navigate = useNavigate();
   const userStore = useUserStore();
   //Left hardcoded for faster testing.
-  const [eMail, setEMail] = useState("linda.bolt@osapiens.com");
-  const [password, setPassword] = useState("1234");
+  const [eMail, setEMail] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   if (!userStore) {
@@ -24,15 +24,15 @@ const Login = () => {
     setErrorMessage(null);
     const response = await userStore.login({ eMail, password });
     if (response.status === ActionResultStatus.ERROR) {
-      setErrorMessage(t("loginPage.error"));
+      setErrorMessage(response.error.message || t("loginPage.error"));
     }
   };
 
   if (userStore.user) {
     return (
-      <div className="login-page">
-        <div className="login-card login-card--session">
-          <div className="login-check">
+      <div className="auth-page">
+        <div className="auth-card auth-card--centered">
+          <div className="auth-check">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -46,18 +46,18 @@ const Login = () => {
               />
             </svg>
           </div>
-          <p className="login-session-label">{t("loginPage.sessionLabel")}</p>
-          <p className="login-session-name">
+          <p className="auth-message">{t("loginPage.sessionLabel")}</p>
+          <p className="auth-session-name">
             {userStore.user.firstName} {userStore.user.lastName}
           </p>
-          <p className="login-session-email">{userStore.user.eMail}</p>
+          <p className="auth-session-email">{userStore.user.eMail}</p>
           <button
             type="button"
             onClick={() => {
               userStore.logout();
               navigate(ERoute.ROOT);
             }}
-            className="login-button login-button--secondary"
+            className="auth-button auth-button--secondary"
           >
             {t("logout")}
           </button>
@@ -67,12 +67,12 @@ const Login = () => {
   }
 
   return (
-    <div className="login-page">
-      <form className="login-card" onSubmit={handleSubmit}>
-        <h1 className="login-title">{t("loginPage.title")}</h1>
-        <p className="login-subtitle">{t("loginPage.subtitle")}</p>
+    <div className="auth-page">
+      <form className="auth-card" onSubmit={handleSubmit}>
+        <h1 className="auth-title">{t("loginPage.title")}</h1>
+        <p className="auth-subtitle">{t("loginPage.subtitle")}</p>
 
-        <div className="login-field">
+        <div className="auth-field">
           <label htmlFor="eMail">{t("loginPage.email")}</label>
           <input
             id="eMail"
@@ -84,7 +84,7 @@ const Login = () => {
           />
         </div>
 
-        <div className="login-field">
+        <div className="auth-field">
           <label htmlFor="password">{t("loginPage.password")}</label>
           <input
             id="password"
@@ -96,14 +96,16 @@ const Login = () => {
           />
         </div>
 
-        {errorMessage && <p className="login-error">{errorMessage}</p>}
+        {errorMessage && <p className="auth-error">{errorMessage}</p>}
 
         <button
           type="submit"
           disabled={userStore.isLoading}
-          className="login-button"
+          className="auth-button"
         >
-          {userStore.isLoading ? t("loginPage.submitting") : t("loginPage.submit")}
+          {userStore.isLoading
+            ? t("loginPage.submitting")
+            : t("loginPage.submit")}
         </button>
       </form>
     </div>

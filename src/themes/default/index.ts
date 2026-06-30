@@ -1,11 +1,16 @@
-import merge  from "lodash/merge";
-import {createTheme, darken} from "@mui/material/styles";
+import merge from "lodash/merge";
+import { createTheme, darken, ThemeOptions } from "@mui/material/styles";
 
 import tokens, { fonts, OsapiensThemeTokens } from "./tokens";
 
 declare module "@mui/material/styles" {
   interface Theme {
     tokens: OsapiensThemeTokens;
+  }
+  // Allow `tokens` in the options object passed to createTheme (not just the
+  // resulting Theme), so it can be typed without resorting to `any`.
+  interface ThemeOptions {
+    tokens?: OsapiensThemeTokens;
   }
   interface BreakpointOverrides {
     xs: true;
@@ -20,7 +25,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-const commonTheme = {
+const commonTheme: ThemeOptions = {
   palette: {
     mode: "light",
     primary: {
@@ -93,29 +98,15 @@ const commonTheme = {
   }
 };
 
-const muiBaseTheme = createTheme();
-
-const tokensLight: any = merge({}, commonTheme, {
+const tokensLight: ThemeOptions = merge({}, commonTheme, {
   palette: {
     mode: "light"
   },
   tokens
-});
-
-const tokensDark: any = merge({}, commonTheme, {
-  palette: {
-    mode: "dark",
-    background: {
-      default: muiBaseTheme.palette.common.black,
-      paper: muiBaseTheme.palette.grey["900"]
-    }
-  },
-  tokens
-});
+} satisfies ThemeOptions);
 
 const osapiensTheme = {
-  light: createTheme(tokensLight),
-  dark: createTheme(tokensDark)
+  light: createTheme(tokensLight)
 };
 
 export default osapiensTheme;
