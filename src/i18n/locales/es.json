@@ -4,6 +4,7 @@
   "AccessDenied": "Acceso denegado",
   "speakToYourAdmin": "Necesitas iniciar sesión para acceder a esta página.",
   "appTitle": "Aplicación Supplier OS",
+  "changeLanguage": "Cambiar idioma",
   "routes": {
     "/home": "Desafío de Bug Bounty",
     "/readme": "Challenge Readme",
@@ -13,6 +14,56 @@
   "home": {
     "welcome": "¡Bienvenido!",
     "intro": "Esta es una aplicación de demostración con algunos fallos y errores que esperamos que puedas encontrar. 😃 Aquí tienes la lista de problemas <b>conocidos</b>:",
-    "sidenote": "Todos los errores tienen un nivel de complejidad diferente y todos ellos son bastante comunes (problemas del mundo real para cualquier desarrollador de React). Para resolver todos los puntos abiertos se requiere un conjunto diferente de habilidades: buscar en Google, experiencia, leer documentación y mensajes de error, creatividad y pensamiento analítico."
+    "sidenote": "Todos los errores tienen un nivel de complejidad diferente y todos ellos son bastante comunes (problemas del mundo real para cualquier desarrollador de React). Para resolver todos los puntos abiertos se requiere un conjunto diferente de habilidades: buscar en Google, experiencia, leer documentación y mensajes de error, creatividad y pensamiento analítico.",
+    "goToReadme": "Ir al readme",
+    "issues": {
+      "consoleKey": {
+        "title": "Error de consola: Advertencia: cada elemento de una lista debe tener una prop \"key\" única.",
+        "description": "Esperamos que puedas encontrar qué está causando este error, ya que resulta molesto."
+      },
+      "boldKnown": {
+        "title": "La palabra \"known\" debería mostrarse en negrita en el texto de introducción.",
+        "description": "Al implementar una solución, asegúrate de no cambiar el texto de i18n."
+      },
+      "avatarMissing": {
+        "title": "Falta el avatar del usuario en la barra de la aplicación, aunque el usuario debería cargarse correctamente al iniciar la app.",
+        "description": "Al iniciar la app cargamos el objeto del usuario actual mediante un store de MobX, pero por algún motivo el avatar del usuario no se muestra en la parte superior derecha de la barra. Atención: al resolver este problema, es posible que te encuentres con un segundo error."
+      },
+      "countdown": {
+        "title": "Opcional: la cuenta atrás se rompe a veces (difícil de reproducir).",
+        "description": "Algunos desarrolladores mencionaron que la cuenta atrás de la cabecera de la app se comporta de forma extraña a veces, pero por desgracia no pudieron reproducir este fallo de forma fiable; quizá tú encuentres la causa raíz."
+      },
+      "languageSwitch": {
+        "title": "Opcional: sería estupendo poder cambiar el idioma.",
+        "description": "Añade un control de selección de idioma en la barra de la aplicación para cambiar el idioma de la interfaz entre inglés y alemán."
+      }
+    }
+  },
+  "avatarMenu": {
+    "editProfile": "Editar perfil",
+    "editOrganization": "Editar organización",
+    "dataPrivacyStatement": "Política de privacidad",
+    "imprint": "Aviso legal"
+  },
+  "loginPage": {
+    "title": "Iniciar sesión",
+    "subtitle": "Introduce tus credenciales para continuar",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Entrar",
+    "submitting": "Entrando...",
+    "error": "Correo electrónico o contraseña no válidos.",
+    "sessionLabel": "Sesión iniciada como"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Actualiza los datos de tu perfil",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "save": "Guardar cambios",
+    "saving": "Guardando...",
+    "error": "No se pudieron guardar los cambios.",
+    "success": "Cambios guardados correctamente.",
+    "loginToEdit": "Inicia sesión para editar tu perfil."
   }
 }

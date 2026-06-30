@@ -4,6 +4,7 @@
   "AccessDenied": "Access denied",
   "speakToYourAdmin": "You need to be logged in to access this page.",
   "appTitle": "Supplier OS Application",
+  "changeLanguage": "Change language",
   "routes": {
     "/home": "Bug Bounty Challenge",
     "/readme": "Challenge Readme",
@@ -13,6 +14,56 @@
   "home": {
     "welcome": "Welcome!",
     "intro": "This is a demo application with some glitches and bugs, where we hope that you can finde them. 😃 Here the list of <b>known</b> issues:",
-    "sidenote": "All bugs have a different level of complexity and all of them are pretty common (real wolrd problems for any react developer). To solve all open points a different set of skills are required: googling, experience, reading docs and error messages, creativity and analytical thinking."
+    "sidenote": "All bugs have a different level of complexity and all of them are pretty common (real wolrd problems for any react developer). To solve all open points a different set of skills are required: googling, experience, reading docs and error messages, creativity and analytical thinking.",
+    "goToReadme": "Go to readme",
+    "issues": {
+      "consoleKey": {
+        "title": "Console error: Warning: Each child in a list should have a unique \"key\" prop.",
+        "description": "Hope you are able to find what is causing this error, as it is annoying."
+      },
+      "boldKnown": {
+        "title": "The word \"known\" should be displayed bold in the introduction text.",
+        "description": "When implementing a solution, please ensure to not change the i18n text."
+      },
+      "avatarMissing": {
+        "title": "User avatar in app bar is missing, although user should be fetched on app start correctly.",
+        "description": "On app start we load the current user object via a MobX store, but for any reason the user avatar is not displayed in the top right of the app bar. Attention: When solving this issue, you might will be confronted with a second bug."
+      },
+      "countdown": {
+        "title": "Optional: Countdown is broken sometimes (hard to reproduce).",
+        "description": "Some developers mentioned that the countdown in the app header behaves strange sometimes, but unfortunately they were not able to reproduce this glitch reliably, maybe you find the root cause."
+      },
+      "languageSwitch": {
+        "title": "Optional: It would be great to be able to switch the language.",
+        "description": "Please add a language select control in the app bar to swicth the UI language between english and german."
+      }
+    }
+  },
+  "avatarMenu": {
+    "editProfile": "Edit Profile",
+    "editOrganization": "Edit Organization",
+    "dataPrivacyStatement": "Data Privacy Statement",
+    "imprint": "Imprint"
+  },
+  "loginPage": {
+    "title": "Log in",
+    "subtitle": "Enter your credentials to continue",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "error": "Invalid email or password.",
+    "sessionLabel": "Signed in as"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Update your profile details",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "error": "Could not save the changes.",
+    "success": "Changes saved successfully.",
+    "loginToEdit": "Log in to edit your profile."
   }
 }

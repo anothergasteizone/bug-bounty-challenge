@@ -4,6 +4,7 @@
   "AccessDenied": "Zugriff verweigert",
   "speakToYourAdmin": "Sie müssen angemeldet sein, um auf diese Seite zuzugreifen.",
   "appTitle": "Supplier OS Application",
+  "changeLanguage": "Sprache ändern",
   "routes": {
     "/home": "Bug Bounty Challenge",
     "/readme": "Challenge Readme",
@@ -13,6 +14,56 @@
   "home": {
     "welcome": "Welcome!",
     "intro": "This is a demo application with some glitches and bugs, where we hope that you can finde them. 😃 Here the list of <b>known</b> issues:",
-    "sidenote": "All bugs have a different level of complexity and all of them are pretty common (real wolrd problems for any react developer). To solve all open points a different set of skills are required: googling, experience, reading docs and error messages, creativity and analytical thinking."
+    "sidenote": "All bugs have a different level of complexity and all of them are pretty common (real wolrd problems for any react developer). To solve all open points a different set of skills are required: googling, experience, reading docs and error messages, creativity and analytical thinking.",
+    "goToReadme": "Zur Readme",
+    "issues": {
+      "consoleKey": {
+        "title": "Konsolenfehler: Warnung: Jedes Kind in einer Liste sollte eine eindeutige \"key\"-Prop haben.",
+        "description": "Wir hoffen, dass du herausfindest, was diesen Fehler verursacht, denn er ist lästig."
+      },
+      "boldKnown": {
+        "title": "Das Wort \"known\" sollte im Einführungstext fett dargestellt werden.",
+        "description": "Bitte achte bei der Umsetzung einer Lösung darauf, den i18n-Text nicht zu ändern."
+      },
+      "avatarMissing": {
+        "title": "Der Benutzer-Avatar in der App-Leiste fehlt, obwohl der Benutzer beim Start der App korrekt geladen werden sollte.",
+        "description": "Beim Start der App laden wir das aktuelle Benutzerobjekt über einen MobX-Store, aber aus irgendeinem Grund wird der Benutzer-Avatar nicht oben rechts in der App-Leiste angezeigt. Achtung: Beim Lösen dieses Problems wirst du möglicherweise mit einem zweiten Fehler konfrontiert."
+      },
+      "countdown": {
+        "title": "Optional: Der Countdown ist manchmal fehlerhaft (schwer zu reproduzieren).",
+        "description": "Einige Entwickler erwähnten, dass sich der Countdown in der App-Kopfzeile manchmal seltsam verhält, aber leider konnten sie diesen Fehler nicht zuverlässig reproduzieren – vielleicht findest du die Ursache."
+      },
+      "languageSwitch": {
+        "title": "Optional: Es wäre toll, die Sprache wechseln zu können.",
+        "description": "Bitte füge in der App-Leiste ein Sprachauswahl-Steuerelement hinzu, um die UI-Sprache zwischen Englisch und Deutsch umzuschalten."
+      }
+    }
+  },
+  "avatarMenu": {
+    "editProfile": "Profil bearbeiten",
+    "editOrganization": "Organisation bearbeiten",
+    "dataPrivacyStatement": "Datenschutzerklärung",
+    "imprint": "Impressum"
+  },
+  "loginPage": {
+    "title": "Anmelden",
+    "subtitle": "Gib deine Anmeldedaten ein, um fortzufahren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "submitting": "Anmeldung...",
+    "error": "Ungültige E-Mail oder ungültiges Passwort.",
+    "sessionLabel": "Angemeldet als"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Aktualisiere deine Profildaten",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "save": "Änderungen speichern",
+    "saving": "Speichern...",
+    "error": "Die Änderungen konnten nicht gespeichert werden.",
+    "success": "Änderungen erfolgreich gespeichert.",
+    "loginToEdit": "Melde dich an, um dein Profil zu bearbeiten."
   }
 }

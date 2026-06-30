@@ -1,10 +1,12 @@
 import { observer } from "mobx-react";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActionResultStatus } from "../../types/global.ts";
 import { useUserStore } from "../../api/services/User";
 import "./index.css";
 
 const Settings = () => {
+  const { t } = useTranslation("app");
   const userStore = useUserStore();
   const [firstName, setFirstName] = useState(userStore?.user?.firstName ?? "");
   const [lastName, setLastName] = useState(userStore?.user?.lastName ?? "");
@@ -19,9 +21,7 @@ const Settings = () => {
     return (
       <div className="login-page">
         <div className="login-card login-card--session">
-          <p className="login-session-label">
-            Inicia sesión para editar tu perfil.
-          </p>
+          <p className="login-session-label">{t("settings.loginToEdit")}</p>
         </div>
       </div>
     );
@@ -33,24 +33,20 @@ const Settings = () => {
     setSuccessMessage(null);
     const response = await userStore.saveSettings({ firstName, lastName });
     if (response.status === ActionResultStatus.ERROR) {
-      setErrorMessage(
-        typeof response.error === "string"
-          ? response.error
-          : "No se pudieron guardar los cambios."
-      );
+      setErrorMessage(t("settings.error"));
     } else {
-      setSuccessMessage("Cambios guardados correctamente.");
+      setSuccessMessage(t("settings.success"));
     }
   };
 
   return (
     <div className="login-page">
       <form className="login-card" onSubmit={handleSubmit}>
-        <h1 className="login-title">Ajustes</h1>
-        <p className="login-subtitle">Actualiza los datos de tu perfil</p>
+        <h1 className="login-title">{t("settings.title")}</h1>
+        <p className="login-subtitle">{t("settings.subtitle")}</p>
 
         <div className="login-field">
-          <label htmlFor="firstName">Nombre</label>
+          <label htmlFor="firstName">{t("settings.firstName")}</label>
           <input
             id="firstName"
             type="text"
@@ -62,7 +58,7 @@ const Settings = () => {
         </div>
 
         <div className="login-field">
-          <label htmlFor="lastName">Apellidos</label>
+          <label htmlFor="lastName">{t("settings.lastName")}</label>
           <input
             id="lastName"
             type="text"
@@ -81,7 +77,7 @@ const Settings = () => {
           disabled={userStore.isLoading}
           className="login-button"
         >
-          {userStore.isLoading ? "Guardando..." : "Guardar cambios"}
+          {userStore.isLoading ? t("settings.saving") : t("settings.save")}
         </button>
       </form>
     </div>

@@ -116,7 +116,9 @@ const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>((props, ref) => 
                 <AvatarMenu user={user} />
               </Grow>
             )}
-            {!(user && user.eMail) && <Link to={ERoute.LOGIN}>Login</Link>}
+            {!(user && user.eMail) && (
+              <Link to={ERoute.LOGIN}>{t("login")}</Link>
+            )}
           </Box>
         </Box>
       </Toolbar>

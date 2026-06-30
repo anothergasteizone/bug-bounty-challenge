@@ -1,11 +1,13 @@
 import { observer } from "mobx-react";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ActionResultStatus, ERoute } from "../../types/global.ts";
 import { useUserStore } from "../../api/services/User";
 import "./index.css";
 
 const Login = () => {
+  const { t } = useTranslation("app");
   const navigate = useNavigate();
   const userStore = useUserStore();
   //Left hardcoded for faster testing.
@@ -22,11 +24,7 @@ const Login = () => {
     setErrorMessage(null);
     const response = await userStore.login({ eMail, password });
     if (response.status === ActionResultStatus.ERROR) {
-      setErrorMessage(
-        typeof response.error === "string"
-          ? response.error
-          : "No se pudo iniciar sesión."
-      );
+      setErrorMessage(t("loginPage.error"));
     }
   };
 
@@ -48,7 +46,7 @@ const Login = () => {
               />
             </svg>
           </div>
-          <p className="login-session-label">Sesión iniciada como</p>
+          <p className="login-session-label">{t("loginPage.sessionLabel")}</p>
           <p className="login-session-name">
             {userStore.user.firstName} {userStore.user.lastName}
           </p>
@@ -61,7 +59,7 @@ const Login = () => {
             }}
             className="login-button login-button--secondary"
           >
-            Cerrar sesión
+            {t("logout")}
           </button>
         </div>
       </div>
@@ -71,13 +69,11 @@ const Login = () => {
   return (
     <div className="login-page">
       <form className="login-card" onSubmit={handleSubmit}>
-        <h1 className="login-title">Iniciar sesión</h1>
-        <p className="login-subtitle">
-          Introduce tus credenciales para continuar
-        </p>
+        <h1 className="login-title">{t("loginPage.title")}</h1>
+        <p className="login-subtitle">{t("loginPage.subtitle")}</p>
 
         <div className="login-field">
-          <label htmlFor="eMail">Email</label>
+          <label htmlFor="eMail">{t("loginPage.email")}</label>
           <input
             id="eMail"
             type="email"
@@ -89,7 +85,7 @@ const Login = () => {
         </div>
 
         <div className="login-field">
-          <label htmlFor="password">Contraseña</label>
+          <label htmlFor="password">{t("loginPage.password")}</label>
           <input
             id="password"
             type="password"
@@ -107,7 +103,7 @@ const Login = () => {
           disabled={userStore.isLoading}
           className="login-button"
         >
-          {userStore.isLoading ? "Entrando..." : "Entrar"}
+          {userStore.isLoading ? t("loginPage.submitting") : t("loginPage.submit")}
         </button>
       </form>
     </div>
